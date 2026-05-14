@@ -308,16 +308,22 @@ class PlaylistProvider extends ChangeNotifier {
   // ═══════════════════════════════════════════
 
   Future<void> addLocalFile() async {
-    _setLoading(true);
     _clearError();
 
-    try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.any,
-        allowMultiple: false,
-      );
+    // Open the file picker FIRST — no loading overlay while user browses
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.any,
+      allowMultiple: false,
+    );
 
-      if (result != null && result.files.isNotEmpty) {
+    // User cancelled — do nothing
+    if (result == null || result.files.isEmpty) return;
+
+    // Only show loading overlay now that a file has been chosen
+    _setLoading(true);
+
+    try {
+      if (result.files.isNotEmpty) {
         final file = result.files.first;
         String content;
 

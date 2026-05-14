@@ -305,62 +305,143 @@ class _AddPlaylistScreenState extends State<AddPlaylistScreen>
 
   Widget _buildLocalFileTab(PlaylistProvider provider) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: 8),
+          _buildLabel('Local M3U File'),
+          const SizedBox(height: 12),
+          // ── Elegant file selector card ──────────────────────────────────
           GestureDetector(
             onTap: () => _pickLocalFile(provider),
-            child: GlassContainer(
-              padding: const EdgeInsets.symmetric(vertical: 60),
-              borderRadius: 20,
-              border: Border.all(
-                color: AppTheme.accent.withValues(alpha: 0.3),
-                width: 2,
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppTheme.bgCard,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppTheme.primary.withValues(alpha: 0.20),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primary.withValues(alpha: 0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
-              child: Column(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Row(
                 children: [
+                  // Gradient icon container
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    width: 52,
+                    height: 52,
                     decoration: BoxDecoration(
-                      gradient: AppTheme.accentGradient,
-                      shape: BoxShape.circle,
+                      gradient: AppTheme.primaryGradient,
+                      borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.accent.withValues(alpha: 0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
+                          color: AppTheme.primary.withValues(alpha: 0.35),
+                          blurRadius: 14,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
                     child: const Icon(
-                      Icons.upload_file_rounded,
+                      Icons.folder_open_rounded,
                       color: Colors.white,
-                      size: 40,
+                      size: 26,
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Tap to browse files',
-                    style: GoogleFonts.outfit(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.textPrimary,
+                  const SizedBox(width: 16),
+                  // Title + subtitle
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Browse Files',
+                          style: GoogleFonts.outfit(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.textPrimary,
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          '.m3u • .m3u8',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: AppTheme.textMuted,
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Supports .m3u and .m3u8 files',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: AppTheme.textSecondary,
+                  // Arrow indicator
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppTheme.primary,
+                      size: 20,
                     ),
                   ),
                 ],
               ),
             ),
           ),
+          const SizedBox(height: 12),
+          // ── Format badges row ───────────────────────────────────────────
+          Row(
+            children: [
+              _buildFormatBadge('M3U'),
+              const SizedBox(width: 8),
+              _buildFormatBadge('M3U8'),
+              const SizedBox(width: 12),
+              Text(
+                'Local playlist files',
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  color: AppTheme.textMuted,
+                ),
+              ),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFormatBadge(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppTheme.primary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: AppTheme.primary.withValues(alpha: 0.20),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.inter(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: AppTheme.primary,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
@@ -459,28 +540,36 @@ class _AddPlaylistScreenState extends State<AddPlaylistScreen>
   }) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: 48,
       child: Container(
         decoration: BoxDecoration(
           gradient: AppTheme.primaryGradient,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primary.withValues(alpha: 0.4),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
+              color: AppTheme.primary.withValues(alpha: 0.35),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: ElevatedButton.icon(
           onPressed: onPressed,
-          icon: Icon(icon),
-          label: Text(label),
+          icon: Icon(icon, size: 18),
+          label: Text(
+            label,
+            style: GoogleFonts.outfit(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              letterSpacing: 0.3,
+            ),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         ),
